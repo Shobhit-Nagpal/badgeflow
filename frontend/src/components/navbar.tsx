@@ -5,6 +5,7 @@ import {
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
+import { Button } from "./ui/button";
 
 export function Navbar() {
   return (
@@ -21,7 +22,12 @@ export function Navbar() {
               <SignInButton />
             </SignedOut>
             <SignedIn>
-              <UserButton />
+              <div className="flex items-center space-x-4">
+                <Button variant="outline" asChild>
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
+                <UserButton />
+              </div>
             </SignedIn>
           </div>
         </div>
