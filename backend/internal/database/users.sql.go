@@ -7,7 +7,35 @@ package database
 
 import (
 	"context"
+	"database/sql"
+	"time"
 )
+
+const createUser = `-- name: CreateUser :exec
+INSERT INTO users (id, email, created_at, image_url) VALUES (
+  $1,
+  $2,
+  $3,
+  $4
+  )
+`
+
+type CreateUserParams struct {
+	ID        string
+	Email     string
+	CreatedAt time.Time
+	ImageUrl  sql.NullString
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
+	_, err := q.db.ExecContext(ctx, createUser,
+		arg.ID,
+		arg.Email,
+		arg.CreatedAt,
+		arg.ImageUrl,
+	)
+	return err
+}
 
 const getUsers = `-- name: GetUsers :many
 SELECT id, email, created_at, image_url, plan_name FROM users

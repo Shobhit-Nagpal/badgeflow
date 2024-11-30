@@ -9,6 +9,7 @@ import (
 type Config struct {
 	Database string
   Addr     string
+  SigningSecret string
 }
 
 func Load() (*Config, error) {
@@ -18,10 +19,12 @@ func Load() (*Config, error) {
 	}
 
 	dbUri := os.Getenv("DB_URI")
+  signingSecret := os.Getenv("SIGNING_SECRET")
 
 	cfg := &Config{
 		Database: dbUri,
     Addr: "localhost:8080",
+    SigningSecret: signingSecret,
 	}
 
 	return cfg, nil
