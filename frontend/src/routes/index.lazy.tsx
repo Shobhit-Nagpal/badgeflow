@@ -1,13 +1,21 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { Footer } from "@/components/footer";
+import { LandingPage } from "@/components/landing-page";
+import { MaxWidthWrapper } from "@/components/max-width-wrapper";
+import { Navbar } from "@/components/navbar";
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createLazyFileRoute('/')({
+export const Route = createLazyFileRoute("/")({
   component: Index,
-})
+});
 
 function Index() {
   return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-    </div>
-  )
+    <>
+      <MaxWidthWrapper>
+        <Navbar />
+      </MaxWidthWrapper>
+      <LandingPage />
+      <Footer />
+    </>
+  );
 }
