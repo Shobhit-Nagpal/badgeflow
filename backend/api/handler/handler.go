@@ -5,24 +5,13 @@ import (
 	"database/sql"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/Shobhit-Nagpal/badgeflow/backend/internal/database"
 	svix "github.com/svix/svix-webhooks/go"
 )
-
-type ClerkPayload struct {
-	Data struct {
-		CreatedAt      int `json:"created_at"`
-		EmailAddresses []struct {
-			EmailAddress string `json:"email_address"`
-		} `json:"email_addresses"`
-    ID       string `json:"id"`
-		ImageURL string `json:"image_url"`
-	} `json:"data"`
-	Type string `json:"type"`
-}
 
 func Health(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-9")
@@ -90,24 +79,49 @@ func Webhook(w http.ResponseWriter, req *http.Request) {
 
 	err = wh.Verify(body, headers)
 
-  milliseconds := int64(1654012591514)
-  createdAt := time.Unix(milliseconds/1000, (milliseconds%1000)*1000000)
+	milliseconds := int64(1654012591514)
+	createdAt := time.Unix(milliseconds/1000, (milliseconds%1000)*1000000)
 
-  params := database.CreateUserParams{
-    ID: payload.Data.ID,
-    Email: payload.Data.EmailAddresses[0].EmailAddress,
-    ImageUrl: sql.NullString{
-      String: payload.Data.ImageURL,
-      Valid: true,
-    },
-    CreatedAt: createdAt,
-  }
+	params := database.CreateUserParams{
+		ID:    payload.Data.ID,
+		Email: payload.Data.EmailAddresses[0].EmailAddress,
+		ImageUrl: sql.NullString{
+			String: payload.Data.ImageURL,
+			Valid:  true,
+		},
+		CreatedAt: createdAt,
+	}
 
-  err = db.CreateUser(context.Background(), params)
+	err = db.CreateUser(context.Background(), params)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user")
 		return
 	}
 
 	respondWithJSON(w, http.StatusOK, map[string]string{"msg": "Event successfully handled"})
+}
+
+func Dashboard(w http.ResponseWriter, req *http.Request) {
+	user := getUser(req, "User")
+	if user == nil {
+		respondWithError(w, http.StatusInternalServerError, "User not found")
+		return
+	}
+
+  log.Println("User id: ", user.ID)
+
+	db := getDB(req, "DB")
+	if db == nil {
+		respondWithError(w, http.StatusInternalServerError, "DB not found")
+		return
+	}
+
+	payload := DashboardPayload{
+		TotalEvents:    100,
+		TotalAttendees: 69420,
+		Revenue:        86000,
+		EngagementRate: 78,
+	}
+
+	respondWithJSON(w, http.StatusOK, payload)
 }

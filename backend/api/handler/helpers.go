@@ -6,6 +6,7 @@ import (
 
 	"github.com/Shobhit-Nagpal/badgeflow/backend/internal/config"
 	"github.com/Shobhit-Nagpal/badgeflow/backend/internal/database"
+	"github.com/clerk/clerk-sdk-go/v2"
 )
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) error {
@@ -40,4 +41,13 @@ func getDB(r *http.Request, key string) *database.Queries {
 	}
 
 	return db
+}
+
+func getUser(r *http.Request, key string) *clerk.User {
+	user, ok := r.Context().Value(key).(*clerk.User)
+	if !ok {
+		return nil
+	}
+
+	return user
 }

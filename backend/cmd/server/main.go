@@ -7,24 +7,27 @@ import (
 	"github.com/Shobhit-Nagpal/badgeflow/backend/api"
 	"github.com/Shobhit-Nagpal/badgeflow/backend/internal/config"
 	"github.com/Shobhit-Nagpal/badgeflow/backend/internal/database"
-   _ "github.com/lib/pq"
+	"github.com/clerk/clerk-sdk-go/v2"
+	_ "github.com/lib/pq"
 )
 
 func main() {
-  cfg, err := config.Load()
-  if err != nil {
-    log.Fatalf("Error loading config: %s\n", err.Error())
-  }
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("Error loading config: %s\n", err.Error())
+	}
 
-  db, err := sql.Open("postgres", cfg.Database)
-  if err != nil {
+	db, err := sql.Open("postgres", cfg.Database)
+	if err != nil {
 		log.Fatalf("Couldn't connect to database: %s\n", err.Error())
-  }
+	}
 
-  dbQueries := database.New(db)
+	clerk.SetKey(cfg.ClerkSecretKey)
 
-  server := api.NewServer(cfg, dbQueries)
+	dbQueries := database.New(db)
 
-  log.Printf("Starting up server on %s...", cfg.Addr)
-  server.ListenAndServe()
+	server := api.NewServer(cfg, dbQueries)
+
+	log.Printf("Starting up server on %s...", cfg.Addr)
+	server.ListenAndServe()
 }
