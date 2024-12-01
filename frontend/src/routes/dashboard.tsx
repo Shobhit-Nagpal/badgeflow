@@ -4,6 +4,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useUser } from "@clerk/clerk-react";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard")({
@@ -16,15 +17,19 @@ export const Route = createFileRoute("/dashboard")({
       });
     }
   },
-  component: () => (
-    <SidebarProvider>
-      <div className="p-2 flex gap-2">
-        <AppSidebar />
-        <SidebarInset>
-          <SidebarTrigger className="-ml-1" />
-          <Outlet />
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
-  ),
+  component: () => {
+    const { user } = useUser();
+
+    return (
+      <SidebarProvider>
+        <div className="p-2 flex gap-2 w-full">
+          <AppSidebar user={user} />
+          <SidebarInset>
+            <SidebarTrigger className="-ml-1" />
+            <Outlet />
+          </SidebarInset>
+        </div>
+      </SidebarProvider>
+    );
+  },
 });

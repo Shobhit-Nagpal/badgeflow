@@ -1,172 +1,139 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
-
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
+import * as React from "react";
+import { Calendar, PieChart, Users, Ticket, Settings2 } from "lucide-react";
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import type { UserResource } from "@clerk/types";
 
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+const navMain = [
+  {
+    title: "Events",
+    url: "/events",
+    icon: Calendar, // Using Lucide icon
+    items: [
+      {
+        title: "All Events",
+        url: "/events/all",
+      },
+      {
+        title: "Upcoming",
+        url: "/events/upcoming",
+      },
+      {
+        title: "Past Events",
+        url: "/events/past",
+      },
+      {
+        title: "Templates",
+        url: "/events/templates",
+      },
+    ],
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-}
+  {
+    title: "Analytics",
+    url: "/analytics",
+    icon: PieChart,
+    items: [
+      {
+        title: "Dashboard",
+        url: "/analytics/dashboard",
+      },
+      {
+        title: "Revenue",
+        url: "/analytics/revenue",
+      },
+      {
+        title: "Attendance",
+        url: "/analytics/attendance",
+      },
+    ],
+  },
+  {
+    title: "Attendees",
+    url: "/attendees",
+    icon: Users, // Lucide icon
+    items: [
+      {
+        title: "Directory",
+        url: "/attendees/directory",
+      },
+      {
+        title: "Check-in",
+        url: "/attendees/check-in",
+      },
+      {
+        title: "Communications",
+        url: "/attendees/communications",
+      },
+    ],
+  },
+  {
+    title: "Ticketing",
+    url: "/tickets",
+    icon: Ticket, // Lucide icon
+    items: [
+      {
+        title: "Ticket Types",
+        url: "/tickets/types",
+      },
+      {
+        title: "Pricing",
+        url: "/tickets/pricing",
+      },
+      {
+        title: "Orders",
+        url: "/tickets/orders",
+      },
+    ],
+  },
+  {
+    title: "Settings",
+    url: "/settings",
+    icon: Settings2,
+    items: [
+      {
+        title: "Organization",
+        url: "/settings/organization",
+      },
+      {
+        title: "Team",
+        url: "/settings/team",
+      },
+      {
+        title: "Billing",
+        url: "/settings/billing",
+      },
+      {
+        title: "Integrations",
+        url: "/settings/integrations",
+      },
+    ],
+  },
+];
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  user?: UserResource | null;
+};
+
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-      </SidebarHeader>
+      <SidebarHeader></SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
-
