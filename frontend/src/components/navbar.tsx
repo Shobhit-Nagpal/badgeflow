@@ -19,7 +19,7 @@ export function Navbar() {
           </div>
           <div className="flex items-center">
             <SignedOut>
-              <SignInButton />
+              <SignInButton mode="modal" />
             </SignedOut>
             <SignedIn>
               <div className="flex items-center space-x-4">
