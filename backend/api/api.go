@@ -18,7 +18,7 @@ func NewServer(cfg *config.Config, queries *database.Queries) *http.Server {
 
 	//Protected routes
 	mux.HandleFunc("GET /api/dashboard", middleware.LoggedIn(handler.Dashboard))
-	//	mux.HandleFunc("GET /api/events", middleware.LoggedIn(handler.GetEvents))
+  mux.HandleFunc("GET /api/events", middleware.LoggedIn(handler.GetEvents))
 	//	mux.HandleFunc("POST /api/events", middleware.LoggedIn(handler.PostEvents))
 
 	//Webhook routes
@@ -26,6 +26,7 @@ func NewServer(cfg *config.Config, queries *database.Queries) *http.Server {
 
 	handler := middleware.CORS(mux)
 	handler = middleware.DB(queries, handler)
+	handler = middleware.Logger(handler)
 
 	server := &http.Server{
 		Handler: handler,

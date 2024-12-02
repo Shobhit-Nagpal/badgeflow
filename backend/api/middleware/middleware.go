@@ -2,8 +2,10 @@ package middleware
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/Shobhit-Nagpal/badgeflow/backend/internal/config"
 	"github.com/Shobhit-Nagpal/badgeflow/backend/internal/database"
@@ -68,5 +70,13 @@ func CORS(next http.Handler) http.Handler {
 			return
 		}
 		next.ServeHTTP(w, req)
+	})
+}
+
+func Logger(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		start := time.Now()
+		next.ServeHTTP(w, req)
+		log.Printf("\nMethod: %s\nPath: %s\nDuration: %s\n\n", req.Method, req.URL.EscapedPath(), time.Since(start))
 	})
 }

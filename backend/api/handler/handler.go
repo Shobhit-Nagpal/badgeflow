@@ -123,3 +123,26 @@ func Dashboard(w http.ResponseWriter, req *http.Request) {
 
 	respondWithJSON(w, http.StatusOK, payload)
 }
+
+func GetEvents(w http.ResponseWriter, req *http.Request) {
+
+	user := getUser(req, "User")
+	if user == nil {
+		respondWithError(w, http.StatusInternalServerError, "User not found")
+		return
+	}
+
+	db := getDB(req, "DB")
+	if db == nil {
+		respondWithError(w, http.StatusInternalServerError, "DB not found")
+		return
+	}
+
+	events, err := db.GetEventsByUserID(context.Background(), user.ID)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Could not get events")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, events)
+}

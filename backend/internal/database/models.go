@@ -7,7 +7,17 @@ package database
 import (
 	"database/sql"
 	"time"
+
+	"github.com/google/uuid"
 )
+
+type Event struct {
+	ID          uuid.UUID
+	Name        string
+	CreatedAt   time.Time
+	ScheduledAt time.Time
+	UserID      string
+}
 
 type User struct {
 	ID        string
