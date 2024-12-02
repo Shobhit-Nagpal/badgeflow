@@ -1,9 +1,8 @@
 import { RouterProvider } from "@tanstack/react-router";
 import { router } from "./router";
 import { useAuth } from "@clerk/clerk-react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/tanstack-query";
 
 export function App() {
   const auth = useAuth();

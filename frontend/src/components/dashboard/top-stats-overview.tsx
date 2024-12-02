@@ -1,14 +1,39 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { CalendarDays, Users, DollarSign, TrendingUp } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TDashboardMetrics } from "@/types";
+import { CalendarDays, Users, DollarSign, TrendingUp } from "lucide-react";
 
-const stats = [
-  { title: "Total Events", value: "120", icon: CalendarDays, change: "+8%" },
-  { title: "Total Attendees", value: "5,240", icon: Users, change: "+12%" },
-  { title: "Revenue", value: "$45,000", icon: DollarSign, change: "+5.2%" },
-  { title: "Engagement Rate", value: "86%", icon: TrendingUp, change: "+2.5%" },
-]
+type TopStatsOverviewProps = {
+  metrics: TDashboardMetrics;
+};
 
-export function TopStatsOverview() {
+export function TopStatsOverview({ metrics }: TopStatsOverviewProps) {
+  const stats = [
+    {
+      title: "Total Events",
+      value: metrics.total_events,
+      icon: CalendarDays,
+      change: "+8%",
+    },
+    {
+      title: "Total Attendees",
+      value: metrics.total_attendees,
+      icon: Users,
+      change: "+12%",
+    },
+    {
+      title: "Revenue",
+      value: metrics.total_revenue,
+      icon: DollarSign,
+      change: "+5.2%",
+    },
+    {
+      title: "Engagement Rate",
+      value: metrics.engagement_rate,
+      icon: TrendingUp,
+      change: "+2.5%",
+    },
+  ];
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (
@@ -20,11 +45,12 @@ export function TopStatsOverview() {
           <CardContent>
             <div className="text-2xl font-bold">{stat.value}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-500">{stat.change}</span> from last month
+              <span className="text-green-500">{stat.change}</span> from last
+              month
             </p>
           </CardContent>
         </Card>
       ))}
     </div>
-  )
+  );
 }
