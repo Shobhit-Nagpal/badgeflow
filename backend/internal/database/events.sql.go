@@ -7,7 +7,46 @@ package database
 
 import (
 	"context"
+	"time"
+
+	"github.com/google/uuid"
 )
+
+const createEvent = `-- name: CreateEvent :exec
+INSERT INTO events (
+  id, 
+  name, 
+  created_at, 
+  scheduled_at, 
+  user_id
+) 
+VALUES (
+  $1, 
+  $2, 
+  $3, 
+  $4, 
+  $5
+)
+`
+
+type CreateEventParams struct {
+	ID          uuid.UUID
+	Name        string
+	CreatedAt   time.Time
+	ScheduledAt time.Time
+	UserID      string
+}
+
+func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) error {
+	_, err := q.db.ExecContext(ctx, createEvent,
+		arg.ID,
+		arg.Name,
+		arg.CreatedAt,
+		arg.ScheduledAt,
+		arg.UserID,
+	)
+	return err
+}
 
 const getEventsByUserID = `-- name: GetEventsByUserID :many
 SELECT id, name, created_at, scheduled_at, user_id FROM events

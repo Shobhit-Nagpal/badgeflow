@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Shobhit-Nagpal/badgeflow/backend/internal/database"
+	"github.com/google/uuid"
 	svix "github.com/svix/svix-webhooks/go"
 )
 
@@ -145,4 +146,50 @@ func GetEvents(w http.ResponseWriter, req *http.Request) {
 	}
 
 	respondWithJSON(w, http.StatusOK, events)
+}
+
+func PostEvent(w http.ResponseWriter, req *http.Request) {
+	user := getUser(req, "User")
+	if user == nil {
+		respondWithError(w, http.StatusInternalServerError, "User not found")
+		return
+	}
+
+	db := getDB(req, "DB")
+	if db == nil {
+		respondWithError(w, http.StatusInternalServerError, "DB not found")
+		return
+	}
+
+	payload := PostEventPayload{}
+
+	body, err := io.ReadAll(req.Body)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't parse body")
+		return
+	}
+
+	err = json.Unmarshal(body, &payload)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't unmarshal body")
+		return
+	}
+
+	id := uuid.New()
+
+	params := database.CreateEventParams{
+		ID:          id,
+		Name:        payload.Name,
+		CreatedAt:   time.Now(),
+		ScheduledAt: payload.ScheduledAt,
+		UserID:      user.ID,
+	}
+
+	err = db.CreateEvent(context.Background(), params)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't create event")
+		return
+	}
+
+	respondWithJSON(w, http.StatusCreated, map[string]string{"msg": "Event created!"})
 }
