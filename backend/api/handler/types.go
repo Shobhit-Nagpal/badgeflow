@@ -15,6 +15,6 @@ type ClerkPayload struct {
 type DashboardPayload struct {
 	TotalEvents    int `json:"total_events"`
 	TotalAttendees int `json:"total_attendees"`
-	Revenue        int `json:"total_revenue"`
+	TotalRevenue        int `json:"total_revenue"`
 	EngagementRate int `json:"engagement_rate"`
 }

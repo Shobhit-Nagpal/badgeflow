@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"time"
 
@@ -102,13 +101,12 @@ func Webhook(w http.ResponseWriter, req *http.Request) {
 }
 
 func Dashboard(w http.ResponseWriter, req *http.Request) {
+
 	user := getUser(req, "User")
 	if user == nil {
 		respondWithError(w, http.StatusInternalServerError, "User not found")
 		return
 	}
-
-  log.Println("User id: ", user.ID)
 
 	db := getDB(req, "DB")
 	if db == nil {
@@ -119,7 +117,7 @@ func Dashboard(w http.ResponseWriter, req *http.Request) {
 	payload := DashboardPayload{
 		TotalEvents:    100,
 		TotalAttendees: 69420,
-		Revenue:        86000,
+		TotalRevenue:   86000,
 		EngagementRate: 78,
 	}
 
