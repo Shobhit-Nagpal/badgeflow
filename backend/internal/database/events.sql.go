@@ -31,11 +31,11 @@ RETURNING id, name, created_at, scheduled_at, user_id
 `
 
 type CreateEventParams struct {
-	ID          uuid.UUID
-	Name        string
-	CreatedAt   time.Time
-	ScheduledAt time.Time
-	UserID      string
+  ID          uuid.UUID 
+  Name        string    
+  CreatedAt   time.Time 
+  ScheduledAt time.Time 
+  UserID      string    
 }
 
 func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) (Event, error) {
