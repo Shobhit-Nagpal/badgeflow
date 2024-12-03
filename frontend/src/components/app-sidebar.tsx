@@ -21,19 +21,19 @@ const navMain = [
     items: [
       {
         title: "All Events",
-        url: "/events/all",
+        url: "/dashboard/events",
       },
       {
         title: "Upcoming",
-        url: "/events/upcoming",
+        url: "/dashboard/events/upcoming",
       },
       {
         title: "Past Events",
-        url: "/events/past",
+        url: "/dashboard/events/past",
       },
       {
         title: "Templates",
-        url: "/events/templates",
+        url: "/dashboard/events/templates",
       },
     ],
   },
@@ -44,15 +44,15 @@ const navMain = [
     items: [
       {
         title: "Dashboard",
-        url: "/analytics/dashboard",
+        url: "/dashboard/analytics",
       },
       {
         title: "Revenue",
-        url: "/analytics/revenue",
+        url: "/dashboard/analytics/revenue",
       },
       {
         title: "Attendance",
-        url: "/analytics/attendance",
+        url: "/dashboard/analytics/attendance",
       },
     ],
   },

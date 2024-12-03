@@ -15,7 +15,7 @@ export function Dashboard() {
     return <div>Loading...</div>;
   }
 
-  if (isError || !metrics) {
+  if (isError) {
     return (
       <div className="bg-foreground rounded-md p-5 shadow-sm grid place-content-center text-input text-sm md:text-base">
         <p>Something went wrong. Please refresh the page.</p>

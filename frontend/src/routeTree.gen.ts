@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardImport } from './routes/dashboard'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
+import { Route as DashboardEventsImport } from './routes/dashboard/events'
 
 // Create Virtual Routes
 
@@ -47,6 +48,12 @@ const DashboardIndexRoute = DashboardIndexImport.update({
   getParentRoute: () => DashboardRoute,
 } as any)
 
+const DashboardEventsRoute = DashboardEventsImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -72,6 +79,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard/events': {
+      id: '/dashboard/events'
+      path: '/events'
+      fullPath: '/dashboard/events'
+      preLoaderRoute: typeof DashboardEventsImport
+      parentRoute: typeof DashboardImport
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -85,10 +99,12 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface DashboardRouteChildren {
+  DashboardEventsRoute: typeof DashboardEventsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardEventsRoute: DashboardEventsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -100,12 +116,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/about': typeof AboutLazyRoute
+  '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
+  '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 
@@ -114,15 +132,22 @@ export interface FileRoutesById {
   '/': typeof IndexLazyRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/about': typeof AboutLazyRoute
+  '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/about' | '/dashboard/'
+  fullPaths: '/' | '/dashboard' | '/about' | '/dashboard/events' | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/dashboard'
-  id: '__root__' | '/' | '/dashboard' | '/about' | '/dashboard/'
+  to: '/' | '/about' | '/dashboard/events' | '/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/about'
+    | '/dashboard/events'
+    | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 
@@ -159,11 +184,16 @@ export const routeTree = rootRoute
     "/dashboard": {
       "filePath": "dashboard.tsx",
       "children": [
+        "/dashboard/events",
         "/dashboard/"
       ]
     },
     "/about": {
       "filePath": "about.lazy.tsx"
+    },
+    "/dashboard/events": {
+      "filePath": "dashboard/events.tsx",
+      "parent": "/dashboard"
     },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx",
