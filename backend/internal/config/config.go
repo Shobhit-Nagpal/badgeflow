@@ -25,7 +25,7 @@ func Load() (*Config, error) {
 	clerkSecretKey := os.Getenv("CLERK_SECRET_KEY")
 
   port := os.Getenv("PORT")
-  addr := fmt.Sprintf("localhost:%s", port)
+  addr := fmt.Sprintf("0.0.0.0:%s", port)
 
 	cfg := &Config{
 		Database:       dbUri,
