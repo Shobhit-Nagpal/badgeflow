@@ -2,7 +2,7 @@
 SELECT * FROM events
 WHERE user_id = $1;
 
--- name: CreateEvent :exec
+-- name: CreateEvent :one
 INSERT INTO events (
   id, 
   name, 
@@ -16,4 +16,5 @@ VALUES (
   $3, 
   $4, 
   $5
-);
+)
+RETURNING *;

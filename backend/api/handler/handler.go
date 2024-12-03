@@ -185,11 +185,11 @@ func PostEvent(w http.ResponseWriter, req *http.Request) {
 		UserID:      user.ID,
 	}
 
-	err = db.CreateEvent(context.Background(), params)
+  event, err := db.CreateEvent(context.Background(), params)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create event")
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, map[string]string{"msg": "Event created!"})
+	respondWithJSON(w, http.StatusCreated, event)
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 )
 
-const createEvent = `-- name: CreateEvent :exec
+const createEvent = `-- name: CreateEvent :one
 INSERT INTO events (
   id, 
   name, 
@@ -27,6 +27,7 @@ VALUES (
   $4, 
   $5
 )
+RETURNING id, name, created_at, scheduled_at, user_id
 `
 
 type CreateEventParams struct {
@@ -37,15 +38,23 @@ type CreateEventParams struct {
 	UserID      string
 }
 
-func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) error {
-	_, err := q.db.ExecContext(ctx, createEvent,
+func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) (Event, error) {
+	row := q.db.QueryRowContext(ctx, createEvent,
 		arg.ID,
 		arg.Name,
 		arg.CreatedAt,
 		arg.ScheduledAt,
 		arg.UserID,
 	)
-	return err
+	var i Event
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.ScheduledAt,
+		&i.UserID,
+	)
+	return i, err
 }
 
 const getEventsByUserID = `-- name: GetEventsByUserID :many
