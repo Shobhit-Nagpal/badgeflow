@@ -23,6 +23,14 @@ export function Dashboard() {
     );
   }
 
+  if (!metrics) {
+    return (
+      <div className="bg-foreground rounded-md p-5 shadow-sm grid place-content-center text-input text-sm md:text-base">
+        <p>Metrics is null.</p>
+      </div>
+    );
+  }
+
   return (
     <MaxWidthWrapper>
       <div className="flex-1 space-y-4 p-8 pt-6 w-full">

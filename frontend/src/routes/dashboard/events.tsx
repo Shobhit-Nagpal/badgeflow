@@ -20,6 +20,14 @@ function EventsPage() {
     );
   }
 
+  if (!events) {
+    return (
+      <div className="bg-foreground rounded-md p-5 shadow-sm grid place-content-center text-input text-sm md:text-base">
+        <p>Events is null.</p>
+      </div>
+    );
+  }
+
   console.log(events);
 
   return <div>Events</div>;
