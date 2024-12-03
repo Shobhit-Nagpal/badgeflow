@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -23,9 +24,12 @@ func Load() (*Config, error) {
 	signingSecret := os.Getenv("SIGNING_SECRET")
 	clerkSecretKey := os.Getenv("CLERK_SECRET_KEY")
 
+  port := os.Getenv("PORT")
+  addr := fmt.Sprintf("localhost:%s", port)
+
 	cfg := &Config{
 		Database:       dbUri,
-		Addr:           "localhost:8080",
+		Addr:           addr,
 		SigningSecret:  signingSecret,
 		ClerkSecretKey: clerkSecretKey,
 	}
