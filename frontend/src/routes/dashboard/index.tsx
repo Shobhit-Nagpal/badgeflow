@@ -1,6 +1,5 @@
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { TopStatsOverview } from "@/components/dashboard/top-stats-overview";
-import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { useGetDashboardMetrics } from "@/hooks/use-clerk-query";
 import { createFileRoute } from "@tanstack/react-router";
 
