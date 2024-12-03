@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import {
   SidebarInset,
   SidebarProvider,
@@ -26,7 +27,9 @@ export const Route = createFileRoute("/dashboard")({
           <AppSidebar user={user} />
           <SidebarInset>
             <SidebarTrigger className="-ml-1" />
-            <Outlet />
+            <MaxWidthWrapper>
+              <Outlet />
+            </MaxWidthWrapper>
           </SidebarInset>
         </div>
       </SidebarProvider>

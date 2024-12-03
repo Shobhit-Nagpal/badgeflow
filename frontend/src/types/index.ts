@@ -7,7 +7,7 @@ export type TDashboardMetrics = {
 
 export type TEvent = {
   id: string;
-  name: string;
+  event_name: string;
   created_at: Date;
   scheduled_at: Date;
   user_id: string;

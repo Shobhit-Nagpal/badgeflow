@@ -1,3 +1,4 @@
+import { Events } from "@/components/dashboard/events";
 import { useGetEvents } from "@/hooks/use-clerk-query";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -28,7 +29,5 @@ function EventsPage() {
     );
   }
 
-  console.log(events);
-
-  return <div>Events</div>;
+  return <Events events={events} />
 }
