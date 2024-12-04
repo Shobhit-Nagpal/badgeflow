@@ -18,6 +18,7 @@ INSERT INTO events (
   name, 
   created_at, 
   scheduled_at, 
+  location,
   user_id
 ) 
 VALUES (
@@ -25,17 +26,19 @@ VALUES (
   $2, 
   $3, 
   $4, 
-  $5
+  $5, 
+  $6
 )
-RETURNING id, name, created_at, scheduled_at, user_id
+RETURNING id, name, created_at, scheduled_at, location, user_id
 `
 
 type CreateEventParams struct {
-  ID          uuid.UUID 
-  Name        string    
-  CreatedAt   time.Time 
-  ScheduledAt time.Time 
-  UserID      string    
+	ID          uuid.UUID
+	Name        string
+	CreatedAt   time.Time
+	ScheduledAt time.Time
+	Location    string
+	UserID      string
 }
 
 func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) (Event, error) {
@@ -44,6 +47,7 @@ func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) (Event
 		arg.Name,
 		arg.CreatedAt,
 		arg.ScheduledAt,
+		arg.Location,
 		arg.UserID,
 	)
 	var i Event
@@ -52,13 +56,14 @@ func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) (Event
 		&i.Name,
 		&i.CreatedAt,
 		&i.ScheduledAt,
+		&i.Location,
 		&i.UserID,
 	)
 	return i, err
 }
 
 const getEventsByUserID = `-- name: GetEventsByUserID :many
-SELECT id, name, created_at, scheduled_at, user_id FROM events
+SELECT id, name, created_at, scheduled_at, location, user_id FROM events
 WHERE user_id = $1
 `
 
@@ -76,6 +81,7 @@ func (q *Queries) GetEventsByUserID(ctx context.Context, userID string) ([]Event
 			&i.Name,
 			&i.CreatedAt,
 			&i.ScheduledAt,
+			&i.Location,
 			&i.UserID,
 		); err != nil {
 			return nil, err

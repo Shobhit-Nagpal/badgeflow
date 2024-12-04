@@ -145,7 +145,20 @@ func GetEvents(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, events)
+	response := []EventPayload{}
+
+	for _, event := range events {
+		response = append(response, EventPayload{
+			ID:          event.ID,
+			Name:        event.Name,
+			ScheduledAt: event.ScheduledAt,
+			CreatedAt:   event.CreatedAt,
+			Location:    event.Location,
+			UserID:      event.UserID,
+		})
+	}
+
+	respondWithJSON(w, http.StatusOK, response)
 }
 
 func PostEvent(w http.ResponseWriter, req *http.Request) {
@@ -182,14 +195,24 @@ func PostEvent(w http.ResponseWriter, req *http.Request) {
 		Name:        payload.Name,
 		CreatedAt:   time.Now(),
 		ScheduledAt: payload.ScheduledAt,
+		Location:    payload.Location,
 		UserID:      user.ID,
 	}
 
-  event, err := db.CreateEvent(context.Background(), params)
+	event, err := db.CreateEvent(context.Background(), params)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create event")
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, event)
+	response := EventPayload{
+		ID:          event.ID,
+		Name:        event.Name,
+		ScheduledAt: event.ScheduledAt,
+		CreatedAt:   event.CreatedAt,
+		UserID:      event.UserID,
+		Location:    event.Location,
+	}
+
+	respondWithJSON(w, http.StatusCreated, response)
 }

@@ -1,6 +1,10 @@
 package handler
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type ClerkPayload struct {
 	Data struct {
@@ -17,11 +21,21 @@ type ClerkPayload struct {
 type DashboardPayload struct {
 	TotalEvents    int `json:"total_events"`
 	TotalAttendees int `json:"total_attendees"`
-	TotalRevenue        int `json:"total_revenue"`
+	TotalRevenue   int `json:"total_revenue"`
 	EngagementRate int `json:"engagement_rate"`
 }
 
+type EventPayload struct {
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"event_name"`
+	ScheduledAt time.Time `json:"scheduled_at"`
+	CreatedAt   time.Time `json:"created_at"`
+	Location    string    `json:"location"`
+	UserID      string    `json:"user_id"`
+}
+
 type PostEventPayload struct {
-  Name string `json:"event_name"`
-  ScheduledAt time.Time `json:"schduled_at"`
+	Name        string    `json:"event_name"`
+	ScheduledAt time.Time `json:"scheduled_at"`
+	Location    string    `json:"location"`
 }

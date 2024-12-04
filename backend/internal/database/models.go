@@ -12,11 +12,12 @@ import (
 )
 
 type Event struct {
-  ID          uuid.UUID `json:"id"`
-  Name        string    `json:"event_name"`
-  CreatedAt   time.Time `json:"created_at"`
-  ScheduledAt time.Time `json:"scheduled_at"`
-  UserID      string    `json:"user_id"`
+	ID          uuid.UUID
+	Name        string
+	CreatedAt   time.Time
+	ScheduledAt time.Time
+	Location    string
+	UserID      string
 }
 
 type User struct {

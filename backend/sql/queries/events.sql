@@ -8,6 +8,7 @@ INSERT INTO events (
   name, 
   created_at, 
   scheduled_at, 
+  location,
   user_id
 ) 
 VALUES (
@@ -15,6 +16,7 @@ VALUES (
   $2, 
   $3, 
   $4, 
-  $5
+  $5, 
+  $6
 )
 RETURNING *;
