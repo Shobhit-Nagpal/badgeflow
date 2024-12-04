@@ -15,7 +15,18 @@ type Config struct {
 }
 
 func Load() (*Config, error) {
-	err := godotenv.Load(".env")
+  env := os.Getenv("GO_ENV")
+	if env == "" {
+		env = "development"
+	}
+
+	// Load appropriate .env file based on environment
+	envFile := ".env"
+	if env == "development" {
+		envFile = ".env.dev"
+	}
+
+	err := godotenv.Load(envFile)
 	if err != nil {
 		return nil, err
 	}
@@ -24,8 +35,9 @@ func Load() (*Config, error) {
 	signingSecret := os.Getenv("SIGNING_SECRET")
 	clerkSecretKey := os.Getenv("CLERK_SECRET_KEY")
 
+  host := os.Getenv("HOST")
   port := os.Getenv("PORT")
-  addr := fmt.Sprintf("0.0.0.0:%s", port)
+  addr := fmt.Sprintf("%s:%s", host, port)
 
 	cfg := &Config{
 		Database:       dbUri,
