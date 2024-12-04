@@ -6,6 +6,7 @@ export const eventSchema = z.object({
     required_error: "Please select a date",
     invalid_type_error: "That's not a date!",
   }),
+  location: z.string().min(1, { message: "Location is required " }),
 });
 
 export type TEventSchema = z.infer<typeof eventSchema>;

@@ -13,7 +13,7 @@ import { format } from "date-fns";
 
 type EventProps = TEvent;
 
-export function Event({ scheduled_at, event_name }: EventProps) {
+export function Event({ scheduled_at, event_name, location }: EventProps) {
   return (
     <Card>
       <CardHeader>
@@ -26,11 +26,13 @@ export function Event({ scheduled_at, event_name }: EventProps) {
         <div className="grid gap-2">
           <div className="flex items-center">
             <CalendarDays className="mr-2 h-4 w-4 opacity-70" />
-            <span className="text-sm">{format(scheduled_at, "dd/mm/yyyy")}</span>
+            <span className="text-sm">
+              {format(scheduled_at, "dd/mm/yyyy")}
+            </span>
           </div>
           <div className="flex items-center">
             <MapPin className="mr-2 h-4 w-4 opacity-70" />
-            <span className="text-sm">Location</span>
+            <span className="text-sm">{location}</span>
           </div>
           <div className="flex items-center">
             <Users className="mr-2 h-4 w-4 opacity-70" />

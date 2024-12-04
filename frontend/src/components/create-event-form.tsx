@@ -34,6 +34,7 @@ export function CreateEventForm({ onOpenChange }: CreateEventFormProps) {
     defaultValues: {
       name: "",
       scheduled_at: new Date(),
+      location: "",
     },
   });
   const { mutateAsync, isPending } = useCreateEvent();
@@ -107,12 +108,27 @@ export function CreateEventForm({ onOpenChange }: CreateEventFormProps) {
               )}
             />
           </div>
+          <div className="flex flex-col justify-center gap-4">
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-right">Location</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Location" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
         <DialogFooter>
           <Button type="submit" disabled={isPending}>
             {isPending ? (
-              <span>
-                <Loader className="h-4 w-4 mr-2" />
+              <span className="flex items-center justify-center">
+                <Loader className="h-4 w-4 mr-2 animate-spin" />
                 Creating...
               </span>
             ) : (

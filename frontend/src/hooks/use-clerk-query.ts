@@ -58,6 +58,7 @@ export const useCreateEvent = () => {
       const event = {
         event_name: newEvent.name,
         scheduled_at: newEvent.scheduled_at.toISOString(),
+        location: newEvent.location,
       };
 
       await fetch(`${BASE_URL}/events`, {
