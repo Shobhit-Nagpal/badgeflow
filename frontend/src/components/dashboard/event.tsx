@@ -10,10 +10,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TEvent } from "@/types";
 import { format } from "date-fns";
+import { Link } from "@tanstack/react-router";
 
 type EventProps = TEvent;
 
-export function Event({ scheduled_at, event_name, location }: EventProps) {
+export function Event({ id, scheduled_at, event_name, location }: EventProps) {
   return (
     <Card>
       <CardHeader>
@@ -41,8 +42,8 @@ export function Event({ scheduled_at, event_name, location }: EventProps) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full">
-          View Details
+        <Button variant="outline" className="w-full" asChild>
+          <Link href={`/dashboard/events/${id}`}>View Details</Link>
         </Button>
       </CardFooter>
     </Card>

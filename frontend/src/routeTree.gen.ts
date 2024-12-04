@@ -15,7 +15,9 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardImport } from './routes/dashboard'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
-import { Route as DashboardEventsImport } from './routes/dashboard/events'
+import { Route as DashboardEventsIndexImport } from './routes/dashboard/events/index'
+import { Route as DashboardEventsEventIdImport } from './routes/dashboard/events/$eventId'
+import { Route as DashboardEventsEventIdIndexImport } from './routes/dashboard/events/$eventId/index'
 
 // Create Virtual Routes
 
@@ -48,11 +50,24 @@ const DashboardIndexRoute = DashboardIndexImport.update({
   getParentRoute: () => DashboardRoute,
 } as any)
 
-const DashboardEventsRoute = DashboardEventsImport.update({
-  id: '/events',
-  path: '/events',
+const DashboardEventsIndexRoute = DashboardEventsIndexImport.update({
+  id: '/events/',
+  path: '/events/',
   getParentRoute: () => DashboardRoute,
 } as any)
+
+const DashboardEventsEventIdRoute = DashboardEventsEventIdImport.update({
+  id: '/events/$eventId',
+  path: '/events/$eventId',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardEventsEventIdIndexRoute =
+  DashboardEventsEventIdIndexImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DashboardEventsEventIdRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -79,13 +94,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
-    '/dashboard/events': {
-      id: '/dashboard/events'
-      path: '/events'
-      fullPath: '/dashboard/events'
-      preLoaderRoute: typeof DashboardEventsImport
-      parentRoute: typeof DashboardImport
-    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -93,19 +101,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexImport
       parentRoute: typeof DashboardImport
     }
+    '/dashboard/events/$eventId': {
+      id: '/dashboard/events/$eventId'
+      path: '/events/$eventId'
+      fullPath: '/dashboard/events/$eventId'
+      preLoaderRoute: typeof DashboardEventsEventIdImport
+      parentRoute: typeof DashboardImport
+    }
+    '/dashboard/events/': {
+      id: '/dashboard/events/'
+      path: '/events'
+      fullPath: '/dashboard/events'
+      preLoaderRoute: typeof DashboardEventsIndexImport
+      parentRoute: typeof DashboardImport
+    }
+    '/dashboard/events/$eventId/': {
+      id: '/dashboard/events/$eventId/'
+      path: '/'
+      fullPath: '/dashboard/events/$eventId/'
+      preLoaderRoute: typeof DashboardEventsEventIdIndexImport
+      parentRoute: typeof DashboardEventsEventIdImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface DashboardEventsEventIdRouteChildren {
+  DashboardEventsEventIdIndexRoute: typeof DashboardEventsEventIdIndexRoute
+}
+
+const DashboardEventsEventIdRouteChildren: DashboardEventsEventIdRouteChildren =
+  {
+    DashboardEventsEventIdIndexRoute: DashboardEventsEventIdIndexRoute,
+  }
+
+const DashboardEventsEventIdRouteWithChildren =
+  DashboardEventsEventIdRoute._addFileChildren(
+    DashboardEventsEventIdRouteChildren,
+  )
+
 interface DashboardRouteChildren {
-  DashboardEventsRoute: typeof DashboardEventsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardEventsEventIdRoute: typeof DashboardEventsEventIdRouteWithChildren
+  DashboardEventsIndexRoute: typeof DashboardEventsIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardEventsRoute: DashboardEventsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardEventsEventIdRoute: DashboardEventsEventIdRouteWithChildren,
+  DashboardEventsIndexRoute: DashboardEventsIndexRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
@@ -116,15 +161,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/about': typeof AboutLazyRoute
-  '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/events/$eventId': typeof DashboardEventsEventIdRouteWithChildren
+  '/dashboard/events': typeof DashboardEventsIndexRoute
+  '/dashboard/events/$eventId/': typeof DashboardEventsEventIdIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
-  '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/events': typeof DashboardEventsIndexRoute
+  '/dashboard/events/$eventId': typeof DashboardEventsEventIdIndexRoute
 }
 
 export interface FileRoutesById {
@@ -132,22 +180,38 @@ export interface FileRoutesById {
   '/': typeof IndexLazyRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/about': typeof AboutLazyRoute
-  '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/events/$eventId': typeof DashboardEventsEventIdRouteWithChildren
+  '/dashboard/events/': typeof DashboardEventsIndexRoute
+  '/dashboard/events/$eventId/': typeof DashboardEventsEventIdIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/about' | '/dashboard/events' | '/dashboard/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/about'
+    | '/dashboard/'
+    | '/dashboard/events/$eventId'
+    | '/dashboard/events'
+    | '/dashboard/events/$eventId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/dashboard/events' | '/dashboard'
+  to:
+    | '/'
+    | '/about'
+    | '/dashboard'
+    | '/dashboard/events'
+    | '/dashboard/events/$eventId'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/about'
-    | '/dashboard/events'
     | '/dashboard/'
+    | '/dashboard/events/$eventId'
+    | '/dashboard/events/'
+    | '/dashboard/events/$eventId/'
   fileRoutesById: FileRoutesById
 }
 
@@ -184,20 +248,32 @@ export const routeTree = rootRoute
     "/dashboard": {
       "filePath": "dashboard.tsx",
       "children": [
-        "/dashboard/events",
-        "/dashboard/"
+        "/dashboard/",
+        "/dashboard/events/$eventId",
+        "/dashboard/events/"
       ]
     },
     "/about": {
       "filePath": "about.lazy.tsx"
     },
-    "/dashboard/events": {
-      "filePath": "dashboard/events.tsx",
-      "parent": "/dashboard"
-    },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx",
       "parent": "/dashboard"
+    },
+    "/dashboard/events/$eventId": {
+      "filePath": "dashboard/events/$eventId.tsx",
+      "parent": "/dashboard",
+      "children": [
+        "/dashboard/events/$eventId/"
+      ]
+    },
+    "/dashboard/events/": {
+      "filePath": "dashboard/events/index.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/events/$eventId/": {
+      "filePath": "dashboard/events/$eventId/index.tsx",
+      "parent": "/dashboard/events/$eventId"
     }
   }
 }
