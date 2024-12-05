@@ -2,6 +2,7 @@ import { ModuleBentoGrid } from "@/components/dashboard/module-bento-grid";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { TopStatsOverview } from "@/components/dashboard/top-stats-overview";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
+import { Loader } from "@/components/ui/loader";
 import { useGetDashboardMetrics } from "@/hooks/use-clerk-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Settings } from "lucide-react";
@@ -31,7 +32,11 @@ export function Dashboard() {
   const { data: metrics, isError, isLoading } = useGetDashboardMetrics();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-[200px] flex items-center justify-center">
+        <Loader size="lg" text="Loading dashboard..." />
+      </div>
+    );
   }
 
   if (isError) {

@@ -1,6 +1,7 @@
 import { Events } from "@/components/dashboard/events";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
+import { Loader } from "@/components/ui/loader";
 import { useGetEvents } from "@/hooks/use-clerk-query";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -12,7 +13,11 @@ function EventsPage() {
   const { data: events, isError, isLoading } = useGetEvents();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-[200px] flex items-center justify-center">
+        <Loader size="lg" text="Loading events..." />
+      </div>
+    );
   }
 
   if (isError) {
