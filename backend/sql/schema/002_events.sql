@@ -6,7 +6,7 @@ CREATE TABLE events (
   created_at TIMESTAMP NOT NULL,
   scheduled_at TIMESTAMP NOT NULL,
   location TEXT NOT NULL,
-  user_id TEXT NOT NULL REFERENCES users (id)
+  user_id TEXT NOT NULL REFERENCES users (id) ON DELETE CASCADE
 );
 
 -- +goose Down

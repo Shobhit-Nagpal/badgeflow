@@ -20,6 +20,7 @@ func NewServer(cfg *config.Config, queries *database.Queries) *http.Server {
 	mux.HandleFunc("GET /api/dashboard", middleware.LoggedIn(handler.Dashboard))
   mux.HandleFunc("GET /api/events", middleware.LoggedIn(handler.GetEvents))
   mux.HandleFunc("POST /api/events", middleware.LoggedIn(handler.PostEvent))
+  mux.HandleFunc("POST /api/events/attendees", middleware.LoggedIn(handler.PostAttendees))
 
 	//Webhook routes
 	mux.HandleFunc("POST /api/webhooks", middleware.Config(cfg, handler.Webhook))

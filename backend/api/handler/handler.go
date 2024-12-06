@@ -216,3 +216,80 @@ func PostEvent(w http.ResponseWriter, req *http.Request) {
 
 	respondWithJSON(w, http.StatusCreated, response)
 }
+
+func PostAttendees(w http.ResponseWriter, req *http.Request) {
+	user := getUser(req, "User")
+	if user == nil {
+		respondWithError(w, http.StatusInternalServerError, "User not found")
+		return
+	}
+
+	db := getDB(req, "DB")
+	if db == nil {
+		respondWithError(w, http.StatusInternalServerError, "DB not found")
+		return
+	}
+
+	payload := PostAttendeePayload{}
+
+	body, err := io.ReadAll(req.Body)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't parse body")
+		return
+	}
+
+	err = json.Unmarshal(body, &payload)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't unmarshal body")
+		return
+	}
+
+	attendee, err := db.GetAttendeeByEmail(context.Background(), payload.Email)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			respondWithError(w, http.StatusInternalServerError, "Error getting attendee by email")
+			return
+		}
+
+		id := uuid.New()
+
+		params := database.CreateAttendeeParams{
+			ID:        id,
+			CreatedAt: time.Now(),
+			Name:      payload.Name,
+			Email:     payload.Email,
+		}
+
+		attendee, err = db.CreateAttendee(req.Context(), params)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, "Couldn't create attendee")
+			return
+		}
+
+	}
+
+	id := uuid.New()
+	eventAttendeeParams := database.CreateEventAttendeeParams{
+		ID:         id,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+		AttendeeID: attendee.ID,
+		EventID:    payload.EventID,
+	}
+
+	eventAttendee, err := db.CreateEventAttendee(context.Background(), eventAttendeeParams)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't create event attendee")
+		return
+	}
+
+  response := EventAttendeePayload{
+    ID: eventAttendee.ID,
+    CreatedAt: eventAttendee.CreatedAt,
+    UpdatedAt: eventAttendee.UpdatedAt,
+    EventID: eventAttendee.EventID,
+    AttendeeID: eventAttendee.AttendeeID,
+  }
+
+  respondWithJSON(w, http.StatusCreated, response)
+}
