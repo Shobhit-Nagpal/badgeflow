@@ -15,12 +15,15 @@ import { Link } from "@tanstack/react-router";
 type EventProps = TEvent;
 
 export function Event({ id, scheduled_at, event_name, location }: EventProps) {
+  const isEventOver = new Date() > scheduled_at;
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           <span className="truncate">{event_name}</span>
-          <Badge variant="secondary">Upcoming</Badge>
+          <Badge variant="secondary">
+            {isEventOver ? "Finished" : "Upcoming"}
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
