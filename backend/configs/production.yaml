@@ -1,9 +1,0 @@
-server:
-  port: 80
-  host: 0.0.0.0
-
-database:
-  host: production-db-host
-  port: 5432
-  name: badgeflow_prod
-  user: postgres

@@ -1,9 +1,0 @@
-server:
-  port: 8080
-  host: localhost
-
-database:
-  host: localhost
-  port: 5432
-  name: badgeflow_dev
-  user: postgres
