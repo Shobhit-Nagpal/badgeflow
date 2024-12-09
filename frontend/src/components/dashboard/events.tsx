@@ -10,6 +10,7 @@ type EventsProps = {
 
 export function Events({ events }: EventsProps) {
   const [open, setOpen] = useState(false);
+  console.log(events);
   if (events.length === 0) {
     return (
       <EmptyState

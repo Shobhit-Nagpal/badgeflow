@@ -13,3 +13,14 @@ export type TEvent = {
   scheduled_at: Date;
   user_id: string;
 }
+
+export type TEventAttendee = {
+  id: string;
+  created_at: Date;
+  updated_at: Date;
+  event_id: string;
+  attendee_id: string;
+  status: string;
+  name: string;
+  email: string;
+}

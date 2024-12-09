@@ -18,6 +18,7 @@ import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as DashboardEventsIndexImport } from './routes/dashboard/events/index'
 import { Route as DashboardEventsEventIdImport } from './routes/dashboard/events/$eventId'
 import { Route as DashboardEventsEventIdIndexImport } from './routes/dashboard/events/$eventId/index'
+import { Route as DashboardEventsEventIdAttendeesImport } from './routes/dashboard/events/$eventId/attendees'
 
 // Create Virtual Routes
 
@@ -69,6 +70,13 @@ const DashboardEventsEventIdIndexRoute =
     getParentRoute: () => DashboardEventsEventIdRoute,
   } as any)
 
+const DashboardEventsEventIdAttendeesRoute =
+  DashboardEventsEventIdAttendeesImport.update({
+    id: '/attendees',
+    path: '/attendees',
+    getParentRoute: () => DashboardEventsEventIdRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -115,6 +123,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardEventsIndexImport
       parentRoute: typeof DashboardImport
     }
+    '/dashboard/events/$eventId/attendees': {
+      id: '/dashboard/events/$eventId/attendees'
+      path: '/attendees'
+      fullPath: '/dashboard/events/$eventId/attendees'
+      preLoaderRoute: typeof DashboardEventsEventIdAttendeesImport
+      parentRoute: typeof DashboardEventsEventIdImport
+    }
     '/dashboard/events/$eventId/': {
       id: '/dashboard/events/$eventId/'
       path: '/'
@@ -128,11 +143,13 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface DashboardEventsEventIdRouteChildren {
+  DashboardEventsEventIdAttendeesRoute: typeof DashboardEventsEventIdAttendeesRoute
   DashboardEventsEventIdIndexRoute: typeof DashboardEventsEventIdIndexRoute
 }
 
 const DashboardEventsEventIdRouteChildren: DashboardEventsEventIdRouteChildren =
   {
+    DashboardEventsEventIdAttendeesRoute: DashboardEventsEventIdAttendeesRoute,
     DashboardEventsEventIdIndexRoute: DashboardEventsEventIdIndexRoute,
   }
 
@@ -164,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/events/$eventId': typeof DashboardEventsEventIdRouteWithChildren
   '/dashboard/events': typeof DashboardEventsIndexRoute
+  '/dashboard/events/$eventId/attendees': typeof DashboardEventsEventIdAttendeesRoute
   '/dashboard/events/$eventId/': typeof DashboardEventsEventIdIndexRoute
 }
 
@@ -172,6 +190,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutLazyRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/events': typeof DashboardEventsIndexRoute
+  '/dashboard/events/$eventId/attendees': typeof DashboardEventsEventIdAttendeesRoute
   '/dashboard/events/$eventId': typeof DashboardEventsEventIdIndexRoute
 }
 
@@ -183,6 +202,7 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/events/$eventId': typeof DashboardEventsEventIdRouteWithChildren
   '/dashboard/events/': typeof DashboardEventsIndexRoute
+  '/dashboard/events/$eventId/attendees': typeof DashboardEventsEventIdAttendeesRoute
   '/dashboard/events/$eventId/': typeof DashboardEventsEventIdIndexRoute
 }
 
@@ -195,6 +215,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/dashboard/events/$eventId'
     | '/dashboard/events'
+    | '/dashboard/events/$eventId/attendees'
     | '/dashboard/events/$eventId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -202,6 +223,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/dashboard'
     | '/dashboard/events'
+    | '/dashboard/events/$eventId/attendees'
     | '/dashboard/events/$eventId'
   id:
     | '__root__'
@@ -211,6 +233,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/dashboard/events/$eventId'
     | '/dashboard/events/'
+    | '/dashboard/events/$eventId/attendees'
     | '/dashboard/events/$eventId/'
   fileRoutesById: FileRoutesById
 }
@@ -264,12 +287,17 @@ export const routeTree = rootRoute
       "filePath": "dashboard/events/$eventId.tsx",
       "parent": "/dashboard",
       "children": [
+        "/dashboard/events/$eventId/attendees",
         "/dashboard/events/$eventId/"
       ]
     },
     "/dashboard/events/": {
       "filePath": "dashboard/events/index.tsx",
       "parent": "/dashboard"
+    },
+    "/dashboard/events/$eventId/attendees": {
+      "filePath": "dashboard/events/$eventId/attendees.tsx",
+      "parent": "/dashboard/events/$eventId"
     },
     "/dashboard/events/$eventId/": {
       "filePath": "dashboard/events/$eventId/index.tsx",
