@@ -36,6 +36,18 @@ type EventAttendee struct {
 	Status     string
 }
 
+type Ticket struct {
+	ID          uuid.UUID
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	Name        string
+	Description sql.NullString
+	Price       string
+	Quantity    int32
+	OnSale      bool
+	EventID     uuid.UUID
+}
+
 type User struct {
 	ID        string
 	Email     string
