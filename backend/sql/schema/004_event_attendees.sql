@@ -5,7 +5,10 @@ CREATE TABLE event_attendees (
   updated_at TIMESTAMP NOT NULL,
   event_id UUID NOT NULL REFERENCES events (id) ON DELETE CASCADE,
   attendee_id UUID NOT NULL REFERENCES attendees (id) ON DELETE CASCADE,
-  UNIQUE (event_id, attendee_id)
+  status VARCHAR(20) NOT NULL DEFAULT 'confirmed',
+
+  UNIQUE (event_id, attendee_id),
+  CHECK (status IN ('confirmed', 'pending', 'cancelled', 'waitlisted'))
 );
 
 -- +goose Down

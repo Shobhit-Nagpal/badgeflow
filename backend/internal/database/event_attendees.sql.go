@@ -17,7 +17,7 @@ INSERT INTO event_attendees
   (id, created_at, updated_at, event_id, attendee_id) 
 VALUES 
   ($1, $2, $3, $4, $5)
-RETURNING id, created_at, updated_at, event_id, attendee_id
+RETURNING id, created_at, updated_at, event_id, attendee_id, status
 `
 
 type CreateEventAttendeeParams struct {
@@ -43,30 +43,47 @@ func (q *Queries) CreateEventAttendee(ctx context.Context, arg CreateEventAttend
 		&i.UpdatedAt,
 		&i.EventID,
 		&i.AttendeeID,
+		&i.Status,
 	)
 	return i, err
 }
 
 const getAttendeesByEvent = `-- name: GetAttendeesByEvent :many
-SELECT id, created_at, updated_at, event_id, attendee_id FROM event_attendees 
+SELECT event_attendees.id, event_attendees.created_at, event_attendees.updated_at, event_attendees.event_id, event_attendees.attendee_id, event_attendees.status, attendees.name, attendees.email 
+FROM event_attendees 
+INNER JOIN attendees ON event_attendees.attendee_id = attendees.id
 WHERE event_id = $1
 `
 
-func (q *Queries) GetAttendeesByEvent(ctx context.Context, eventID uuid.UUID) ([]EventAttendee, error) {
+type GetAttendeesByEventRow struct {
+	ID         uuid.UUID
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	EventID    uuid.UUID
+	AttendeeID uuid.UUID
+	Status     string
+	Name       string
+	Email      string
+}
+
+func (q *Queries) GetAttendeesByEvent(ctx context.Context, eventID uuid.UUID) ([]GetAttendeesByEventRow, error) {
 	rows, err := q.db.QueryContext(ctx, getAttendeesByEvent, eventID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []EventAttendee
+	var items []GetAttendeesByEventRow
 	for rows.Next() {
-		var i EventAttendee
+		var i GetAttendeesByEventRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.EventID,
 			&i.AttendeeID,
+			&i.Status,
+			&i.Name,
+			&i.Email,
 		); err != nil {
 			return nil, err
 		}

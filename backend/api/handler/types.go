@@ -42,14 +42,17 @@ type PostEventPayload struct {
 
 type PostAttendeePayload struct {
 	EventID uuid.UUID `json:"event_id"`
-  Name    string    `json:"name"`
-  Email    string    `json:"email"`
+	Name    string    `json:"name"`
+	Email   string    `json:"email"`
 }
 
 type EventAttendeePayload struct {
-	ID         uuid.UUID
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	EventID    uuid.UUID
-	AttendeeID uuid.UUID
+	ID         uuid.UUID `json:"id"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	EventID    uuid.UUID `json:"event_id"`
+	AttendeeID uuid.UUID `json:"attendee_id"`
+	Status     string    `json:"status"`
+	Name       string    `json:"name"`
+	Email      string    `json:"email"`
 }

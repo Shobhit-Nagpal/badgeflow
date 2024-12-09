@@ -33,6 +33,7 @@ type EventAttendee struct {
 	UpdatedAt  time.Time
 	EventID    uuid.UUID
 	AttendeeID uuid.UUID
+	Status     string
 }
 
 type User struct {

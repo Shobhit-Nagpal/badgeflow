@@ -6,5 +6,7 @@ VALUES
 RETURNING *;
 
 -- name: GetAttendeesByEvent :many
-SELECT * FROM event_attendees 
+SELECT event_attendees.*, attendees.name, attendees.email 
+FROM event_attendees 
+INNER JOIN attendees ON event_attendees.attendee_id = attendees.id
 WHERE event_id = $1;

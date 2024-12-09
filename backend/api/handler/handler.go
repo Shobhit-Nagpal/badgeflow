@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"time"
 
@@ -201,6 +202,7 @@ func PostEvent(w http.ResponseWriter, req *http.Request) {
 
 	event, err := db.CreateEvent(context.Background(), params)
 	if err != nil {
+    log.Println(err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create event")
 		return
 	}
@@ -292,4 +294,49 @@ func PostAttendees(w http.ResponseWriter, req *http.Request) {
   }
 
   respondWithJSON(w, http.StatusCreated, response)
+}
+
+func GetAttendees(w http.ResponseWriter, req *http.Request) {
+
+	user := getUser(req, "User")
+	if user == nil {
+		respondWithError(w, http.StatusInternalServerError, "User not found")
+		return
+	}
+
+	db := getDB(req, "DB")
+	if db == nil {
+		respondWithError(w, http.StatusInternalServerError, "DB not found")
+		return
+	}
+
+  eventIdStr := req.PathValue("eventId")
+  eventId, err := uuid.Parse(eventIdStr)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't parse event id")
+		return
+	}
+
+  eventAttendees, err := db.GetAttendeesByEvent(context.Background(), eventId)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get event attendees")
+		return
+	}
+
+  response := []EventAttendeePayload{}
+
+  for _, eventAttendee := range eventAttendees {
+    response = append(response, EventAttendeePayload{
+      ID: eventAttendee.ID,
+      CreatedAt: eventAttendee.CreatedAt,
+      UpdatedAt: eventAttendee.UpdatedAt,
+      EventID: eventAttendee.EventID,
+      AttendeeID: eventAttendee.AttendeeID,
+      Status: eventAttendee.Status,
+      Name: eventAttendee.Name,
+      Email: eventAttendee.Email,
+    })
+  }
+
+  respondWithJSON(w, http.StatusOK, response)
 }
