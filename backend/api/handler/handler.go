@@ -202,7 +202,7 @@ func PostEvent(w http.ResponseWriter, req *http.Request) {
 
 	event, err := db.CreateEvent(context.Background(), params)
 	if err != nil {
-    log.Println(err)
+		log.Println(err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create event")
 		return
 	}
@@ -285,15 +285,15 @@ func PostAttendees(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-  response := EventAttendeePayload{
-    ID: eventAttendee.ID,
-    CreatedAt: eventAttendee.CreatedAt,
-    UpdatedAt: eventAttendee.UpdatedAt,
-    EventID: eventAttendee.EventID,
-    AttendeeID: eventAttendee.AttendeeID,
-  }
+	response := EventAttendeePayload{
+		ID:         eventAttendee.ID,
+		CreatedAt:  eventAttendee.CreatedAt,
+		UpdatedAt:  eventAttendee.UpdatedAt,
+		EventID:    eventAttendee.EventID,
+		AttendeeID: eventAttendee.AttendeeID,
+	}
 
-  respondWithJSON(w, http.StatusCreated, response)
+	respondWithJSON(w, http.StatusCreated, response)
 }
 
 func GetAttendees(w http.ResponseWriter, req *http.Request) {
@@ -310,33 +310,144 @@ func GetAttendees(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-  eventIdStr := req.PathValue("eventId")
-  eventId, err := uuid.Parse(eventIdStr)
+	eventIdStr := req.PathValue("eventId")
+	eventId, err := uuid.Parse(eventIdStr)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't parse event id")
 		return
 	}
 
-  eventAttendees, err := db.GetAttendeesByEvent(context.Background(), eventId)
+	eventAttendees, err := db.GetAttendeesByEvent(context.Background(), eventId)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get event attendees")
 		return
 	}
 
-  response := []EventAttendeePayload{}
+	response := []EventAttendeePayload{}
 
-  for _, eventAttendee := range eventAttendees {
-    response = append(response, EventAttendeePayload{
-      ID: eventAttendee.ID,
-      CreatedAt: eventAttendee.CreatedAt,
-      UpdatedAt: eventAttendee.UpdatedAt,
-      EventID: eventAttendee.EventID,
-      AttendeeID: eventAttendee.AttendeeID,
-      Status: eventAttendee.Status,
-      Name: eventAttendee.Name,
-      Email: eventAttendee.Email,
-    })
-  }
+	for _, eventAttendee := range eventAttendees {
+		response = append(response, EventAttendeePayload{
+			ID:         eventAttendee.ID,
+			CreatedAt:  eventAttendee.CreatedAt,
+			UpdatedAt:  eventAttendee.UpdatedAt,
+			EventID:    eventAttendee.EventID,
+			AttendeeID: eventAttendee.AttendeeID,
+			Status:     eventAttendee.Status,
+			Name:       eventAttendee.Name,
+			Email:      eventAttendee.Email,
+		})
+	}
 
-  respondWithJSON(w, http.StatusOK, response)
+	respondWithJSON(w, http.StatusOK, response)
+}
+
+func GetTickets(w http.ResponseWriter, req *http.Request) {
+	user := getUser(req, "User")
+	if user == nil {
+		respondWithError(w, http.StatusInternalServerError, "User not found")
+		return
+	}
+
+	db := getDB(req, "DB")
+	if db == nil {
+		respondWithError(w, http.StatusInternalServerError, "DB not found")
+		return
+	}
+
+	eventIdStr := req.PathValue("eventId")
+	eventId, err := uuid.Parse(eventIdStr)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't parse event id")
+		return
+	}
+
+	tickets, err := db.GetTicketsByEvent(context.Background(), eventId)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get tickets")
+		return
+	}
+
+	response := []TicketPayload{}
+
+	for _, ticket := range tickets {
+		response = append(response, TicketPayload{
+			ID:          ticket.ID,
+			CreatedAt:   ticket.CreatedAt,
+			UpdatedAt:   ticket.UpdatedAt,
+			EventID:     ticket.EventID,
+			Name:        ticket.Name,
+			Description: ticket.Description,
+			OnSale:      ticket.OnSale,
+			Price:       ticket.Price,
+			Quantity:    ticket.Quantity,
+		})
+	}
+
+	respondWithJSON(w, http.StatusOK, response)
+
+}
+
+func PostTickets(w http.ResponseWriter, req *http.Request) {
+	user := getUser(req, "User")
+	if user == nil {
+		respondWithError(w, http.StatusInternalServerError, "User not found")
+		return
+	}
+
+	db := getDB(req, "DB")
+	if db == nil {
+		respondWithError(w, http.StatusInternalServerError, "DB not found")
+		return
+	}
+
+	payload := PostTicketPayload{}
+
+	body, err := io.ReadAll(req.Body)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't parse body")
+		return
+	}
+
+	err = json.Unmarshal(body, &payload)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't unmarshal body")
+		return
+	}
+
+	id := uuid.New()
+
+	params := database.CreateTicketForEventParams{
+		ID:        id,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name:      payload.Name,
+		Description: sql.NullString{
+			String: payload.Description,
+			Valid:  len(payload.Description) > 0,
+		},
+		Price:    payload.Price,
+		Quantity: payload.Quantity,
+		EventID:  payload.EventID,
+		OnSale:   payload.OnSale,
+	}
+
+	ticket, err := db.CreateTicketForEvent(context.Background(), params)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't create ticket")
+		return
+	}
+
+	response := TicketPayload{
+		ID:          ticket.ID,
+		CreatedAt:   ticket.CreatedAt,
+		UpdatedAt:   ticket.UpdatedAt,
+		Name:        ticket.Name,
+		Description: ticket.Description,
+		Price:       ticket.Price,
+		Quantity:    ticket.Quantity,
+		OnSale:      ticket.OnSale,
+		EventID:     ticket.EventID,
+	}
+
+	respondWithJSON(w, http.StatusCreated, response)
 }

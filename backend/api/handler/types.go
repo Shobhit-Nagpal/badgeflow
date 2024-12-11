@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -55,4 +56,25 @@ type EventAttendeePayload struct {
 	Status     string    `json:"status"`
 	Name       string    `json:"name"`
 	Email      string    `json:"email"`
+}
+
+type PostTicketPayload struct {
+	EventID     uuid.UUID `json:"event_id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Price       string    `json:"price"`
+	Quantity    int32     `json:"quantity"`
+	OnSale      bool      `json:"on_sale"`
+}
+
+type TicketPayload struct {
+	ID          uuid.UUID      `json:"id"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
+	Name        string         `json:"name"`
+	Description sql.NullString `json:"description"`
+	Price       string         `json:"price"`
+	Quantity    int32          `json:"quantity"`
+	OnSale      bool           `json:"on_sale"`
+	EventID     uuid.UUID      `json:"event_id"`
 }
