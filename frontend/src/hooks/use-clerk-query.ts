@@ -5,7 +5,7 @@ import { BASE_URL } from "@/utils/api";
 import { queryClient } from "@/lib/tanstack-query";
 import { TEventSchema } from "@/schemas/event";
 import { TEventAttendeeSchema } from "@/schemas/event-attendee";
-import { TTicketSchema } from "@/schemas/ticket";
+import { TTicketSchema, TUpdateTicketSchema } from "@/schemas/ticket";
 
 export const useGetDashboardMetrics = () => {
   const { getToken } = useAuth();
@@ -166,6 +166,37 @@ export const useCreateTicket = (eventId: string) => {
 
       await fetch(`${BASE_URL}/events/tickets`, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(ticket),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+    },
+  });
+};
+
+export const useUpdateTicket = (eventId: string) => {
+  const { getToken } = useAuth();
+
+  return useMutation({
+    mutationKey: ["updateTicket"],
+    mutationFn: async (newTicket: TTicketSchema) => {
+      const ticket = {
+        ticket_id: newTicket.id,
+        name: newTicket.name,
+        description: newTicket.description,
+        price: newTicket.price.toString(),
+        quantity: newTicket.quantity,
+        on_sale: newTicket.on_sale,
+        event_id: eventId,
+      };
+
+      await fetch(`${BASE_URL}/events/tickets`, {
+        method: "PUT",
         headers: {
           Authorization: `Bearer ${await getToken()}`,
           "Content-Type": "application/json",

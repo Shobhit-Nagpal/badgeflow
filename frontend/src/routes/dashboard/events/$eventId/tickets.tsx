@@ -25,7 +25,7 @@ function TicketingPage() {
   if (isLoading) {
     return (
       <div className="h-[200px] flex items-center justify-center">
-        <Loader size="lg" text="Loading attendees..." />
+        <Loader size="lg" text="Loading tickets..." />
       </div>
     );
   }
@@ -41,12 +41,10 @@ function TicketingPage() {
   if (!tickets) {
     return (
       <div className="bg-foreground rounded-md p-5 shadow-sm grid place-content-center text-input text-sm md:text-base">
-        <p>Metrics is null.</p>
+        <p>Tickets is null.</p>
       </div>
     );
   }
-
-  console.log(tickets);
 
   const totalRevenue = tickets.reduce((sum, tt) => sum + +tt.price, 0);
   const totalSold = tickets.reduce((sum) => sum, 0);
@@ -105,6 +103,7 @@ function TicketingPage() {
         <TabsContent value="manage" className="space-y-4">
           {tickets.map((ticket) => {
             const data: TTicketSchema = {
+              id: ticket.id,
               name: ticket.name,
               description: ticket.description?.String,
               price: +ticket.price,

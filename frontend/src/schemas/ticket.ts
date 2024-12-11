@@ -1,6 +1,7 @@
-import * as z from "zod"
+import * as z from "zod";
 
 export const ticketSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(2, {
     message: "Ticket name must be at least 2 characters.",
   }),
@@ -12,6 +13,6 @@ export const ticketSchema = z.object({
   }),
   description: z.string().optional(),
   on_sale: z.boolean().default(true),
-})
+});
 
-export type TTicketSchema = z.infer<typeof ticketSchema>
+export type TTicketSchema = z.infer<typeof ticketSchema>;
