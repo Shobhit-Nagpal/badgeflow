@@ -18,6 +18,7 @@ import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as DashboardEventsIndexImport } from './routes/dashboard/events/index'
 import { Route as DashboardEventsEventIdImport } from './routes/dashboard/events/$eventId'
 import { Route as DashboardEventsEventIdIndexImport } from './routes/dashboard/events/$eventId/index'
+import { Route as DashboardEventsEventIdTicketsImport } from './routes/dashboard/events/$eventId/tickets'
 import { Route as DashboardEventsEventIdAttendeesImport } from './routes/dashboard/events/$eventId/attendees'
 
 // Create Virtual Routes
@@ -67,6 +68,13 @@ const DashboardEventsEventIdIndexRoute =
   DashboardEventsEventIdIndexImport.update({
     id: '/',
     path: '/',
+    getParentRoute: () => DashboardEventsEventIdRoute,
+  } as any)
+
+const DashboardEventsEventIdTicketsRoute =
+  DashboardEventsEventIdTicketsImport.update({
+    id: '/tickets',
+    path: '/tickets',
     getParentRoute: () => DashboardEventsEventIdRoute,
   } as any)
 
@@ -130,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardEventsEventIdAttendeesImport
       parentRoute: typeof DashboardEventsEventIdImport
     }
+    '/dashboard/events/$eventId/tickets': {
+      id: '/dashboard/events/$eventId/tickets'
+      path: '/tickets'
+      fullPath: '/dashboard/events/$eventId/tickets'
+      preLoaderRoute: typeof DashboardEventsEventIdTicketsImport
+      parentRoute: typeof DashboardEventsEventIdImport
+    }
     '/dashboard/events/$eventId/': {
       id: '/dashboard/events/$eventId/'
       path: '/'
@@ -144,12 +159,14 @@ declare module '@tanstack/react-router' {
 
 interface DashboardEventsEventIdRouteChildren {
   DashboardEventsEventIdAttendeesRoute: typeof DashboardEventsEventIdAttendeesRoute
+  DashboardEventsEventIdTicketsRoute: typeof DashboardEventsEventIdTicketsRoute
   DashboardEventsEventIdIndexRoute: typeof DashboardEventsEventIdIndexRoute
 }
 
 const DashboardEventsEventIdRouteChildren: DashboardEventsEventIdRouteChildren =
   {
     DashboardEventsEventIdAttendeesRoute: DashboardEventsEventIdAttendeesRoute,
+    DashboardEventsEventIdTicketsRoute: DashboardEventsEventIdTicketsRoute,
     DashboardEventsEventIdIndexRoute: DashboardEventsEventIdIndexRoute,
   }
 
@@ -182,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/events/$eventId': typeof DashboardEventsEventIdRouteWithChildren
   '/dashboard/events': typeof DashboardEventsIndexRoute
   '/dashboard/events/$eventId/attendees': typeof DashboardEventsEventIdAttendeesRoute
+  '/dashboard/events/$eventId/tickets': typeof DashboardEventsEventIdTicketsRoute
   '/dashboard/events/$eventId/': typeof DashboardEventsEventIdIndexRoute
 }
 
@@ -191,6 +209,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/events': typeof DashboardEventsIndexRoute
   '/dashboard/events/$eventId/attendees': typeof DashboardEventsEventIdAttendeesRoute
+  '/dashboard/events/$eventId/tickets': typeof DashboardEventsEventIdTicketsRoute
   '/dashboard/events/$eventId': typeof DashboardEventsEventIdIndexRoute
 }
 
@@ -203,6 +222,7 @@ export interface FileRoutesById {
   '/dashboard/events/$eventId': typeof DashboardEventsEventIdRouteWithChildren
   '/dashboard/events/': typeof DashboardEventsIndexRoute
   '/dashboard/events/$eventId/attendees': typeof DashboardEventsEventIdAttendeesRoute
+  '/dashboard/events/$eventId/tickets': typeof DashboardEventsEventIdTicketsRoute
   '/dashboard/events/$eventId/': typeof DashboardEventsEventIdIndexRoute
 }
 
@@ -216,6 +236,7 @@ export interface FileRouteTypes {
     | '/dashboard/events/$eventId'
     | '/dashboard/events'
     | '/dashboard/events/$eventId/attendees'
+    | '/dashboard/events/$eventId/tickets'
     | '/dashboard/events/$eventId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -224,6 +245,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/events'
     | '/dashboard/events/$eventId/attendees'
+    | '/dashboard/events/$eventId/tickets'
     | '/dashboard/events/$eventId'
   id:
     | '__root__'
@@ -234,6 +256,7 @@ export interface FileRouteTypes {
     | '/dashboard/events/$eventId'
     | '/dashboard/events/'
     | '/dashboard/events/$eventId/attendees'
+    | '/dashboard/events/$eventId/tickets'
     | '/dashboard/events/$eventId/'
   fileRoutesById: FileRoutesById
 }
@@ -288,6 +311,7 @@ export const routeTree = rootRoute
       "parent": "/dashboard",
       "children": [
         "/dashboard/events/$eventId/attendees",
+        "/dashboard/events/$eventId/tickets",
         "/dashboard/events/$eventId/"
       ]
     },
@@ -297,6 +321,10 @@ export const routeTree = rootRoute
     },
     "/dashboard/events/$eventId/attendees": {
       "filePath": "dashboard/events/$eventId/attendees.tsx",
+      "parent": "/dashboard/events/$eventId"
+    },
+    "/dashboard/events/$eventId/tickets": {
+      "filePath": "dashboard/events/$eventId/tickets.tsx",
       "parent": "/dashboard/events/$eventId"
     },
     "/dashboard/events/$eventId/": {

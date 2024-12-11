@@ -12,7 +12,7 @@ export type TEvent = {
   created_at: Date;
   scheduled_at: Date;
   user_id: string;
-}
+};
 
 export type TEventAttendee = {
   id: string;
@@ -23,4 +23,19 @@ export type TEventAttendee = {
   status: string;
   name: string;
   email: string;
-}
+};
+
+export type TTicket = {
+  id: string;
+  created_at: Date;
+  updated_at: Date;
+  name: string;
+  description?: {
+    String: string;
+    Valid: boolean;
+  };
+  price: string;
+  quantity: number;
+  on_sale: boolean;
+  event_id: string;
+};
