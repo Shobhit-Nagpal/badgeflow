@@ -67,6 +67,11 @@ type PostTicketPayload struct {
 	OnSale      bool      `json:"on_sale"`
 }
 
+type UpdateTicketPayload struct {
+	PostTicketPayload
+	TicketID uuid.UUID `json:"ticket_id"`
+}
+
 type TicketPayload struct {
 	ID          uuid.UUID      `json:"id"`
 	CreatedAt   time.Time      `json:"created_at"`

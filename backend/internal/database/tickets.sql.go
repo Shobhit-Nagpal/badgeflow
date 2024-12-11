@@ -97,3 +97,45 @@ func (q *Queries) GetTicketsByEvent(ctx context.Context, eventID uuid.UUID) ([]T
 	}
 	return items, nil
 }
+
+const updateTicketForEvent = `-- name: UpdateTicketForEvent :one
+UPDATE tickets
+SET updated_at = $1, name = $2, description = $3, price = $4, quantity = $5, on_sale = $6
+WHERE id = $7
+RETURNING id, created_at, updated_at, name, description, price, quantity, on_sale, event_id
+`
+
+type UpdateTicketForEventParams struct {
+	UpdatedAt   time.Time
+	Name        string
+	Description sql.NullString
+	Price       string
+	Quantity    int32
+	OnSale      bool
+	ID          uuid.UUID
+}
+
+func (q *Queries) UpdateTicketForEvent(ctx context.Context, arg UpdateTicketForEventParams) (Ticket, error) {
+	row := q.db.QueryRowContext(ctx, updateTicketForEvent,
+		arg.UpdatedAt,
+		arg.Name,
+		arg.Description,
+		arg.Price,
+		arg.Quantity,
+		arg.OnSale,
+		arg.ID,
+	)
+	var i Ticket
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Description,
+		&i.Price,
+		&i.Quantity,
+		&i.OnSale,
+		&i.EventID,
+	)
+	return i, err
+}

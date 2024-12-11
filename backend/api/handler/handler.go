@@ -451,3 +451,65 @@ func PostTickets(w http.ResponseWriter, req *http.Request) {
 
 	respondWithJSON(w, http.StatusCreated, response)
 }
+
+func UpdateTicket(w http.ResponseWriter, req *http.Request) {
+	user := getUser(req, "User")
+	if user == nil {
+		respondWithError(w, http.StatusInternalServerError, "User not found")
+		return
+	}
+
+	db := getDB(req, "DB")
+	if db == nil {
+		respondWithError(w, http.StatusInternalServerError, "DB not found")
+		return
+	}
+
+	payload := UpdateTicketPayload{}
+
+	body, err := io.ReadAll(req.Body)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't parse body")
+		return
+	}
+
+	err = json.Unmarshal(body, &payload)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't unmarshal body")
+		return
+	}
+
+	params := database.UpdateTicketForEventParams{
+		ID:        payload.TicketID,
+		UpdatedAt: time.Now(),
+		Price:     payload.Price,
+		Name:      payload.Name,
+    Quantity:  payload.Quantity,
+		Description: sql.NullString{
+			String: payload.Description,
+			Valid:  len(payload.Description) > 0,
+		},
+    OnSale: payload.OnSale,
+	}
+
+	ticket, err := db.UpdateTicketForEvent(context.Background(), params)
+	if err != nil {
+    log.Println(err)
+		respondWithError(w, http.StatusInternalServerError, "Couldn't update ticket")
+		return
+	}
+
+	response := TicketPayload{
+		ID:          ticket.ID,
+		CreatedAt:   ticket.CreatedAt,
+		UpdatedAt:   ticket.UpdatedAt,
+		Name:        ticket.Name,
+		Description: ticket.Description,
+		Price:       ticket.Price,
+		Quantity:    ticket.Quantity,
+		OnSale:      ticket.OnSale,
+		EventID:     ticket.EventID,
+	}
+
+	respondWithJSON(w, http.StatusCreated, response)
+}
